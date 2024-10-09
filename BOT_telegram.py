@@ -70,18 +70,7 @@ async def progress_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def ajuda_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Aquí tens una llista de les comandes disponibles: /start, /objectiu, /alarma, /rutina, /progress, /equip, /ajuda.")
 
-# Funció per obtenir una resposta resumida de l'objectiu a través de l'API de ChatGPT
-def obtenir_resposta_resumida(objectiu_usuari):
-    prompt = f"L'usuari vol aconseguir l'objectiu: {objectiu_usuari}. Respon de forma resumida amb consells o passos a seguir."
 
-    resposta = openai.Completion.create(
-        engine="text-davinci-004",
-        prompt=prompt,
-        max_tokens=50,
-        temperature=0.7
-    )
-
-    return resposta.choices[0].text.strip()
 
 def main():
     # Crear l'aplicació
