@@ -4,14 +4,14 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import openai
 
 # Configura la clau d'API d'OpenAI
-openai.api_key = 'EL_TEU_TOKEN_DE_API'
+openai.api_key = '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'
 
 TOKEN: Final = '7623386182:AAH56qJBppCJvGK2NwHljE6txqgqF-WEboM'
 BOT_USERNAME: Final = '@Fitbotbot'
 
 # Comanda start
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Benvingut a FitBot! Comencem amb el teu entrenament.')
+    await update.message.reply_text('Benvingut a FitBot! Comencem amb el teu entrenament.Posa la comanda /objectiu per seleccionar el objetiu que vols')
 
 # Comanda /objectiu
 async def objectiu_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
