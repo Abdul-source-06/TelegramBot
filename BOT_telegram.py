@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import openai
 
 # Configura la clau d'API d'OpenAI
-openai.api_key = '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'
+openai.api_key = 'pon aqui tu token gey'
 
 TOKEN: Final = '7623386182:AAH56qJBppCJvGK2NwHljE6txqgqF-WEboM'
 BOT_USERNAME: Final = '@Fitbotbot'
