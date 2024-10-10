@@ -3,8 +3,9 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import openai
 
+
 # Configura la clau d'API d'OpenAI
-openai.api_key = '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'
+
 
 TOKEN: Final = '7623386182:AAH56qJBppCJvGK2NwHljE6txqgqF-WEboM'
 BOT_USERNAME: Final = '@Fitbotbot'
@@ -24,7 +25,7 @@ async def obtenir_resposta_ia(objectius_usuari):
 
 # Comanda start
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Benvingut a FitBot! Posa la comanda /objectiu per començar a definir el teu entrenament.')
+    await update.message.reply_text('Benvingut a FitBot! Comencem amb el teu entrenament.Posa la comanda /objectiu per seleccionar el objetiu que vols')
 
 # Comanda /objectiu
 async def objectiu_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -74,7 +75,8 @@ async def progress_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def ajuda_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Aquí tens una llista de les comandes disponibles: /start, /objectiu, /alarma, /rutina, /progress, /equip, /ajuda.")
 
-# Funció principal
+
+
 def main():
     # Crear l'aplicació
     app = Application.builder().token(TOKEN).build()
