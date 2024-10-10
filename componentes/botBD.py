@@ -14,7 +14,7 @@ cursor.execute('''
 CREATE TABLE IF NOT EXISTS usuarios (
     id INTEGER PRIMARY KEY,
     nombre TEXT NOT NULL,
-    edad INTEGER NOT NULL,
+    edad INTEGER NOT NULL CHECK (edad >= 0 AND edad <= 120),
     peso FLOAT NOT NULL,
     idioma TEXT NOT NULL        
 )
@@ -68,16 +68,23 @@ def addUsuario(id, nombre, edad, peso, idioma):
     conexion.commit()
     conexion.close()
 
+def deleteUsuario(id):
+    cursor = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    cursor.execute('DELETE FROM usuarios WHERE id = ?', (id))
+    conexion.commit()
+    conexion.close()
+
 def get_user(id):
-    conn = sqlite3.connect(db_name)
-    cursor = conn.cursor()
+    cursor = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
     cursor.execute('SELECT * FROM usuarios WHERE id = ?', (id))
     user = cursor.fetchone()
     conexion.close()
     return user
 
 #funciones rutina de usuario
-def add_rutinaUsuario(idUsuari, nombreRutina, idRutina):
+def add_usuarioRutina(idUsuari, nombreRutina, idRutina):
     cursor = sqlite3.connect(db_name)
     cursor = conexion.cursor()
     cursor.execute('''
@@ -87,14 +94,23 @@ def add_rutinaUsuario(idUsuari, nombreRutina, idRutina):
     conexion.commit()
     conexion.close()
 
-def get_user_routine(idUsuari):
+def get_usuarioRutina(idUsuari):
     cursor = sqlite3.connect(db_name)
     cursor = conexion.cursor()
-    cursor.execute('SELECT * FROM usuarioRutina WHERE idUsuari = ?', (idUsuari,))
+    cursor.execute('SELECT * FROM usuarioRutina WHERE idUsuari = ?', (idUsuari))
     user_routine = cursor.fetchone()
     conexion.close()
     return user_routine
 
+def delete_usuarioRutina(idUsuario, idRutina):
+    cursor = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    cursor.execute('DELETE FROM usuarioRutina WHERE idUsuari = ? AND idRutina = ?', (idUsuario, idRutina))
+    conexion.commit()
+    conexion.close()
+
+
+#funciones textos
 def get_textos(id, idioma):
     cursor = sqlite3.connect(db_name)
     cursor = conexion.cursor()
@@ -102,3 +118,20 @@ def get_textos(id, idioma):
     text = cursor.fetchone()
     conexion.close()
     return text
+
+#funciones tipo de rutina
+def get_tiposRutinas(id, idioma):
+    cursor = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    cursor.execute('SELECT * FROM tiposRutina WHERE id = ? AND idioma = ?', (id, idioma))
+    rutinas = cursor.fetchone()
+    conexion.close()
+    return rutinas
+
+def deleteUsuario(id):
+    cursor = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    cursor.execute('DELETE FROM tiposRutina WHERE id = ?', (id))
+    conexion.commit()
+    conexion.close()
+
