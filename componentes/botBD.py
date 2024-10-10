@@ -35,7 +35,9 @@ cursor.execute('''
 CREATE TABLE IF NOT EXISTS usuarioRutina (
     idUsuari INTEGER PRIMARY KEY,
     nombreRutina TEXT NOT NULL,
-    idRutina INTEGER NOT NULL       
+    idRutina INTEGER NOT NULL,
+    FOREIGN KEY(idRutina) REFERENCES tiposRutina(id)
+    FOREIGN KEY(idUsuari) REFERENCES usuarios(id)             
 )
 ''')
 
@@ -55,3 +57,48 @@ conexion.commit()
 conexion.close()
 
 print(f"Base de datos '{db_name}' creada con éxito.")
+
+#funciones usuario
+def addUsuario(id, nombre, edad, peso, idioma):
+    cursor = conexion.cursor()
+    cursor.execute('''
+        INSERT INTO usuarios(id, nombre, edad, peso, idioma) 
+        VALUES(?, ?, ?, ?, ?),
+    ''', (id, nombre, edad, peso, idioma))
+    conexion.commit()
+    conexion.close()
+
+def get_user(id):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM usuarios WHERE id = ?', (id))
+    user = cursor.fetchone()
+    conexion.close()
+    return user
+
+#funciones rutina de usuario
+def add_rutinaUsuario(idUsuari, nombreRutina, idRutina):
+    cursor = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    cursor.execute('''
+        INSERT INTO usuarioRutina (idUsuari, nombreRutina, idRutina) 
+        VALUES (?, ?, ?)
+    ''', (idUsuari, nombreRutina, idRutina))
+    conexion.commit()
+    conexion.close()
+
+def get_user_routine(idUsuari):
+    cursor = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    cursor.execute('SELECT * FROM usuarioRutina WHERE idUsuari = ?', (idUsuari,))
+    user_routine = cursor.fetchone()
+    conexion.close()
+    return user_routine
+
+def get_textos(id, idioma):
+    cursor = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    cursor.execute('SELECT * FROM textos WHERE id = ? AND idioma = ?', (id, idioma))
+    text = cursor.fetchone()
+    conexion.close()
+    return text
