@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     id INTEGER PRIMARY KEY,
     nombre TEXT NOT NULL,
     edad INTEGER NOT NULL CHECK (edad >= 0 AND edad <= 120),
-    peso FLOAT NOT NULL,
+    peso INTEGER NOT NULL,
     idioma TEXT NOT NULL        
 )
 ''')
@@ -75,13 +75,17 @@ def deleteUsuario(id):
     conexion.commit()
     conexion.close()
 
-def get_user(id):
-    cursor = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('SELECT * FROM usuarios WHERE id = ?', (id))
-    user = cursor.fetchone()
-    conexion.close()
-    return user
+
+
+# Funció per obtenir un usuari
+def get_user(user_id):
+    try:
+        cursor = conexion.cursor()
+        cursor.execute("SELECT * FROM usuarios WHERE id=?", (user_id,))
+        user = cursor.fetchone()
+        return user
+    finally:
+        conexion.close() 
 
 #funciones rutina de usuario
 def add_usuarioRutina(idUsuari, nombreRutina, idRutina):

@@ -62,7 +62,7 @@ async def process_weight(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     name = context.user_data['name']
     age = context.user_data['age']
-    weight = float(update.message.text)
+    weight = int(update.message.text)
     language = context.user_data['language']
 
     # Guardar el usuario en la base de datos
