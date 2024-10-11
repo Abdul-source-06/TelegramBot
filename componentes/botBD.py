@@ -54,6 +54,8 @@ def create_tables():
 
 print(f"Base de datos '{db_name}' creada con éxito.")
 
+create_tables()
+
 # Funciones usuario
 def addUsuario(id, nombre, edad, peso, idioma):
     conexion = sqlite3.connect(db_name)
