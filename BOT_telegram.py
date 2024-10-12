@@ -101,11 +101,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         routine_types = ["Cardio", "Fuerza", "Flexibilidad"]  # Modifica según los tipos de rutina disponibles
         keyboard = [[InlineKeyboardButton(routine, callback_data=routine) for routine in routine_types]]
         reply_markup = InlineKeyboardMarkup(keyboard)
-
         await query.edit_message_reply_markup(reply_markup=reply_markup)
+        await routine_type_selection(update.message, context)
         return ROUTINE_TYPE
     elif query.data == 'my_routines':
         await query.edit_message_text(text="Función para mostrar tus rutinas aún no implementada.")
+    
 
 # Función para gestionar la selección de tipo de rutina
 async def routine_type_selection(update: Update, context: ContextTypes.DEFAULT_TYPE):
