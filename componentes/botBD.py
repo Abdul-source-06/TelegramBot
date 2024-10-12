@@ -128,10 +128,60 @@ def get_tiposRutinas(id, idioma):
     conexion.close()
     return rutinas
 
+def add_tipoRutina(id, infoRutina, rango, gym, idioma):
+    conexion = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    
+    cursor.execute('''
+        INSERT INTO tiposRutina (id, infoRutina, rango, gym, idioma) 
+        VALUES (?, ?, ?, ?, ?)
+    ''', (id, infoRutina, rango, gym, idioma))
+    
+    conexion.commit()
+    conexion.close()
+
+def get_next_rutina_id():
+    conexion = sqlite3.connect(db_name)
+    cursor = conexion.cursor()
+    
+    cursor.execute('SELECT MAX(id) FROM tiposRutina')
+    result = cursor.fetchone()
+    
+    # Si no hi ha rutines, comencem per 1, sinó augmentem l'ID màxim en 1
+    next_id = result[0] + 1 if result[0] else 1
+    
+    conexion.close()
+    return next_id
+
 def deleteUsuario(id):
     cursor = sqlite3.connect(db_name)
     cursor = conexion.cursor()
     cursor.execute('DELETE FROM tiposRutina WHERE id = ?', (id))
+    conexion.commit()
+    conexion.close()
+
+#Funciones tipo idioma
+
+#Funcion getIdioma
+def get_idioma(id_usuario):
+    # Connexió a la base de dades
+    conexion = sqlite3.connect('fitbot.db')
+    cursor = conexion.cursor()
+    
+    # Recuperar l'idioma de l'usuari
+    cursor.execute("SELECT idioma FROM usuarios WHERE id = ?", (id_usuario,))
+    resultado = cursor.fetchone()
+    
+    conexion.close()
+
+#Funcion UpdateIdioma and save idioma
+def guardar_idioma_en_bd(id_usuario, idioma):
+    conexion = sqlite3.connect('fitbot.db')
+    cursor = conexion.cursor()
+    
+    # Actualitzar l'idioma per a l'usuari
+    cursor.execute("UPDATE usuarios SET idioma = ? WHERE id = ?", (idioma, id_usuario))
+    
     conexion.commit()
     conexion.close()
 
