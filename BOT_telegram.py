@@ -68,10 +68,11 @@ async def process_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['name'] = update.message.text
     
     # Enviem el missatge en l'idioma seleccionat
-    if idioma == 'es':
-        await update.message.reply_text("¿Cuántos años tienes?")  # Missatge en espanyol
+    if idioma == 'en':
+        await update.message.reply_text("How old are you?")
+      
     else:
-        await update.message.reply_text("How old are you?")  # Missatge en anglès
+        await update.message.reply_text("¿Cuántos años tienes?")  # Missatge en anglès
     
     return AGE  # Continuem el flux de la conversa
 
@@ -86,10 +87,10 @@ async def process_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['age'] = int(update.message.text)
     
     # Enviar el missatge segons l'idioma seleccionat
-    if idioma == 'es':
-        await update.message.reply_text("¿Cuál es tu peso (en kg)?")  # Missatge en espanyol
+    if idioma == 'en':
+        await update.message.reply_text("What is your weight (in kg)?")
     else:
-        await update.message.reply_text("What is your weight (in kg)?")  # Missatge en anglès
+        await update.message.reply_text("¿Cuál es tu peso (en kg)?")  # Missatge en anglès
     
     return WEIGHT  # Continuar el flux de la conversa
 
