@@ -22,11 +22,14 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if idioma == 'es':
             await update.message.reply_text(f"¡Bienvenido de nuevo, {user[1]}!")  # Missatge en espanyol
-        else:
+        elif idioma =='en':
             await update.message.reply_text(f"Welcome back, {user[1]}!")  # Missatge en anglès
-
+        else:
+            print('error')
         # Mostrar el menú principal en l'idioma seleccionat
-        await main_menu(update.message, context, idioma)
+        await main_menu(update, context)
+        return ConversationHandler.END
+        
 
     else:
         # Si l'usuari no existeix, demanem que seleccioni l'idioma
@@ -52,9 +55,10 @@ async def language_selection(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     if language == 'en':
         await query.edit_message_text(text="You have selected English. What's your name?")
-    else:
+    elif language =='es':
         await query.edit_message_text(text="Has seleccionado Español. ¿Cuál es tu nombre?")
-
+    else:
+        print('error')
     return NAME
 
 # Funció per processar el nom i manejar l'idioma
@@ -71,8 +75,10 @@ async def process_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if idioma == 'en':
         await update.message.reply_text("How old are you?")
       
-    else:
+    elif idioma =='es':
         await update.message.reply_text("¿Cuántos años tienes?")  # Missatge en anglès
+    else:
+        print('error')
     
     return AGE  # Continuem el flux de la conversa
 
@@ -89,9 +95,11 @@ async def process_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Enviar el missatge segons l'idioma seleccionat
     if idioma == 'en':
         await update.message.reply_text("What is your weight (in kg)?")
-    else:
+    elif idioma =='es':
         await update.message.reply_text("¿Cuál es tu peso (en kg)?")  # Missatge en anglès
-    
+    else:
+        print('error')
+
     return WEIGHT  # Continuar el flux de la conversa
 
 # Función para procesar el peso y guardar el usuario
@@ -107,10 +115,14 @@ async def process_weight(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if language == 'en':
         await update.message.reply_text(f"Your data has been saved, {name}!")
-    else:
+    elif language == 'es':
         await update.message.reply_text(f"¡Tus datos han sido guardados, {name}!")
+    else:
+        # Opción para manejar un posible error de idioma desconocido
+        await update.message.reply_text(f"Language not supported. Please contact support.")
+        print(f"Error: Unsupported language '{language}' for user {name}")
 
-    await main_menu(update.message, context)
+    await main_menu(update, context)
     return ConversationHandler.END
 
 # Funció per mostrar el menú principal i manejar l'idioma
@@ -128,14 +140,15 @@ async def main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("📋 Mis rutinas", callback_data='my_routines')]
         ]
         menu_text = 'Menú principal:\n\n- 🔄 Cambiar idioma\n- 🆕 Nueva rutina\n- 📋 Mis rutinas'
-    else:
+    elif idioma =='en':
         keyboard = [
             [InlineKeyboardButton("🔄 Change language", callback_data='change_language'),
              InlineKeyboardButton("🆕 New routine", callback_data='new_routine')],
             [InlineKeyboardButton("📋 My routines", callback_data='my_routines')]
         ]
         menu_text = 'Main menu:\n\n- 🔄 Change language\n- 🆕 New routine\n- 📋 My routines'
-    
+    else:
+        print('no hi ha mes idiomes')
     # Crear el teclat amb els botons traduïts
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -201,8 +214,10 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 
                 if idioma == 'es':
                     rutina_texts.append(f"Nombre: {nombre_rutina}\nTipo: {info_rutina[1]}")
-                else:
+                elif idioma=='en':
                     rutina_texts.append(f"Name: {nombre_rutina}\nType: {info_rutina[1]}")
+                else:
+                    print('error')
             
             # Unim totes les rutines en un sol text
             text_rutinas = "\n\n".join(rutina_texts)
@@ -215,8 +230,10 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Afegir el botó de tornada al menú
         if idioma == 'es':
             back_button = InlineKeyboardButton("⬅️ Volver al menú", callback_data='back_to_menu')
-        else:
+        elif idioma =='en':
             back_button = InlineKeyboardButton("⬅️ Back to menu", callback_data='back_to_menu')
+        else:
+            print('error')
 
         keyboard = [[back_button]]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -242,8 +259,10 @@ async def routine_type_selection(update: Update, context: ContextTypes.DEFAULT_T
     # Missatge segons l'idioma
     if idioma == 'es':
         await query.edit_message_text(text="¿Cómo quieres nombrar la rutina?")
-    else:
+    elif idioma == 'en':
         await query.edit_message_text(text="What do you want to name the routine?")
+    else:
+        print('error')
     
     return ROUTINE_NAME
 
@@ -257,8 +276,10 @@ async def process_routine_name(update: Update, context: ContextTypes.DEFAULT_TYP
     # Missatge segons l'idioma
     if idioma == 'es':
         await update.message.reply_text("¿Tienes acceso a materiales de gimnasio? (Sí/No)")
-    else:
+    elif idioma =='en':
         await update.message.reply_text("Do you have access to gym materials? (Yes/No)")
+    else:
+        print('error')
     
     return GYM_ACCESS
 
@@ -273,8 +294,10 @@ async def handle_gym_access(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Missatge segons l'idioma
     if idioma == 'es':
         await update.message.reply_text("Indica una hora para completar la rutina (HH:MM).")
-    else:
+    elif idioma =='en':
         await update.message.reply_text("Indicate a time to complete the routine (HH:MM).")
+    else:
+        print('error')
     
     return COMPLETION_TIME
 
@@ -309,8 +332,10 @@ async def process_completion_time(update: Update, context: ContextTypes.DEFAULT_
     # Confirmació per l'usuari
     if idioma == 'es':
         await update.message.reply_text(f"Rutina '{routine_name}' de tipo '{routine_type}' guardada con éxito.")
-    else:
+    elif idioma =='en':
         await update.message.reply_text(f"Routine '{routine_name}' of type '{routine_type}' saved successfully.")
+    else:
+        print('error')
 
     # Tornar al menú principal
     await main_menu(update.message, context)
@@ -326,15 +351,16 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Resposta segons l'idioma
     if idioma == 'es':
         await update.message.reply_text("Acabas de enviar un mensaje de texto, pero actualmente no tenemos opción para responder a preguntas o cualquier cosa así. Si necesitas ayuda, selecciona /help.")
-    else:
+    elif idioma == 'en':
         await update.message.reply_text("You just sent a text message, but currently we don't have an option to answer questions or anything like that. If you need help, please select /help.")
-
+    else:
+        print('error')
 
 def main():
-    # Crear la aplicación
+    # Crear l'aplicació
     app = Application.builder().token(TOKEN).build()
 
-    # Crear un manejador de conversación para la recopilación de datos
+    # Crear un manejador de conversa per la recopilació de dades
     conversation_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start_command)],
         states={
@@ -347,16 +373,18 @@ def main():
             GYM_ACCESS: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_gym_access)],
             COMPLETION_TIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, process_completion_time)]
         },
-        fallbacks=[]
+        fallbacks=[CommandHandler('start', start_command)]  # Permet reiniciar la conversa si hi ha algun problema
     )
 
-    # Añadir manejadores
+    # Afegeix el manejador de la conversa a l'aplicació
     app.add_handler(conversation_handler)
-    app.add_handler(MessageHandler(filters.TEXT, handle_text))
-    app.add_handler(CallbackQueryHandler(button_callback))
 
-    # Comenzar el bot
-    app.run_polling()
+    # Manejador per missatges de text
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
+
+    # Començar l'aplicació
+    print("El bot està funcionant...")
+    app.run_polling(poll_interval=3)
 
 if __name__ == "__main__":
     main()
