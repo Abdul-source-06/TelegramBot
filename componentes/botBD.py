@@ -1,23 +1,24 @@
 import sqlite3
 
-# Nombre del fichero de la base de datos
+# Nombre del fitxer de la base de dades
 db_name = "fitbot.db"
 
-# Crear las tablas
-def create_tables():
-    conexion = sqlite3.connect(db_name)
+# Connectar-se (això també crearà el fitxer si no existeix)
+with sqlite3.connect(db_name) as conexion:
+    # Crear un cursor per executar comandes SQL
     cursor = conexion.cursor()
-    
+
+    # Crear una taula d'exemple
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY,
         nombre TEXT NOT NULL,
         edad INTEGER NOT NULL CHECK (edad >= 0 AND edad <= 120),
-        peso INTEGER NOT NULL,
+        peso FLOAT NOT NULL,
         idioma TEXT NOT NULL        
     )
     ''')
-    
+
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS tiposRutina (
         id INTEGER,
@@ -28,17 +29,18 @@ def create_tables():
         PRIMARY KEY(id, idioma)             
     )
     ''')
-    
+
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS usuarioRutina (
-        idUsuari INTEGER PRIMARY KEY,
+        idUsuari INTEGER,
         nombreRutina TEXT NOT NULL,
         idRutina INTEGER NOT NULL,
         FOREIGN KEY(idRutina) REFERENCES tiposRutina(id),
-        FOREIGN KEY(idUsuari) REFERENCES usuarios(id)             
+        FOREIGN KEY(idUsuari) REFERENCES usuarios(id), 
+        PRIMARY KEY(idUsuari, idRutina)  -- Afegit clau primària
     )
     ''')
-    
+
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS textos (
         id INTEGER,
@@ -47,89 +49,100 @@ def create_tables():
         PRIMARY KEY(id, idioma)       
     )
     ''')
-    
+
+    # Guardar els canvis
     conexion.commit()
-    conexion.close()
-    print(f"Base de datos '{db_name}' creada con éxito.")
+print(f"Base de dades '{db_name}' creada amb èxit.")
 
-print(f"Base de datos '{db_name}' creada con éxito.")
-
-create_tables()
-
-# Funciones usuario
+# Funcions d'usuari
 def addUsuario(id, nombre, edad, peso, idioma):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('''
-        INSERT INTO usuarios(id, nombre, edad, peso, idioma) 
-        VALUES(?, ?, ?, ?, ?)
-    ''', (id, nombre, edad, peso, idioma))
-    conexion.commit()
-    conexion.close()
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('''INSERT INTO usuarios (id, nombre, edad, peso, idioma) 
+                          VALUES (?, ?, ?, ?, ?)''', (id, nombre, edad, peso, idioma))
+        conexion.commit()
 
 def deleteUsuario(id):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('DELETE FROM usuarios WHERE id = ?', (id,))
-    conexion.commit()
-    conexion.close()
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('DELETE FROM usuarios WHERE id = ?', (id,))
+        conexion.commit()
 
-# Funció per obtenir un usuari
-def get_user(user_id):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute("SELECT * FROM usuarios WHERE id=?", (user_id,))
-    user = cursor.fetchone()
-    conexion.close()
+def get_user(id):
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('SELECT * FROM usuarios WHERE id = ?', (id,))
+        user = cursor.fetchone()
     return user
 
-# Funciones rutina de usuario
+# Funcions rutina d'usuari
 def add_usuarioRutina(idUsuari, nombreRutina, idRutina):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('''
-        INSERT INTO usuarioRutina (idUsuari, nombreRutina, idRutina) 
-        VALUES (?, ?, ?)
-    ''', (idUsuari, nombreRutina, idRutina))
-    conexion.commit()
-    conexion.close()
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('''INSERT INTO usuarioRutina (idUsuari, nombreRutina, idRutina) 
+                          VALUES (?, ?, ?)''', (idUsuari, nombreRutina, idRutina))
+        conexion.commit()
 
 def get_usuarioRutina(idUsuari):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('SELECT * FROM usuarioRutina WHERE idUsuari = ?', (idUsuari,))
-    user_routine = cursor.fetchone()
-    conexion.close()
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('SELECT * FROM usuarioRutina WHERE idUsuari = ?', (idUsuari,))
+        user_routine = cursor.fetchall()  # Utilitzar fetchall per obtenir totes les rutines
     return user_routine
 
 def delete_usuarioRutina(idUsuario, idRutina):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('DELETE FROM usuarioRutina WHERE idUsuari = ? AND idRutina = ?', (idUsuario, idRutina))
-    conexion.commit()
-    conexion.close()
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('DELETE FROM usuarioRutina WHERE idUsuari = ? AND idRutina = ?', (idUsuario, idRutina))
+        conexion.commit()
 
-# Funciones textos
+# Funcions textos
 def get_textos(id, idioma):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('SELECT * FROM textos WHERE id = ? AND idioma = ?', (id, idioma))
-    text = cursor.fetchone()
-    conexion.close()
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('SELECT * FROM textos WHERE id = ? AND idioma = ?', (id, idioma))
+        text = cursor.fetchone()
     return text
 
-# Funciones tipo de rutina
+# Funcions tipus rutina
 def get_tiposRutinas(id, idioma):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('SELECT * FROM tiposRutina WHERE id = ? AND idioma = ?', (id, idioma))
-    rutinas = cursor.fetchone()
-    conexion.close()
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('SELECT * FROM tiposRutina WHERE id = ? AND idioma = ?', (id, idioma))
+        rutinas = cursor.fetchone()
     return rutinas
 
-def delete_tiposRutinas(id):
-    conexion = sqlite3.connect(db_name)
-    cursor = conexion.cursor()
-    cursor.execute('DELETE FROM tiposRutina WHERE id = ?', (id,))
-    conexion.commit()
-    conexion.close()
+def add_tipoRutina(id, infoRutina, rango, gym, idioma):
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('''INSERT INTO tiposRutina (id, infoRutina, rango, gym, idioma) 
+                          VALUES (?, ?, ?, ?, ?)''', (id, infoRutina, rango, gym, idioma))
+        conexion.commit()
+
+def get_next_rutina_id():
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('SELECT MAX(id) FROM tiposRutina')
+        result = cursor.fetchone()
+        next_id = result[0] + 1 if result[0] else 1
+    return next_id
+
+def deleteTipoRutina(id):
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute('DELETE FROM tiposRutina WHERE id = ?', (id,))
+        conexion.commit()
+
+# Funcions idioma
+def get_idioma(id_usuario):
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute("SELECT idioma FROM usuarios WHERE id = ?", (id_usuario,))
+        resultado = cursor.fetchone()
+    return resultado[0] if resultado else None
+
+def guardar_idioma_en_bd(id_usuario, idioma):
+    with sqlite3.connect(db_name) as conexion:
+        cursor = conexion.cursor()
+        cursor.execute("UPDATE usuarios SET idioma = ? WHERE id = ?", (idioma, id_usuario))
+        conexion.commit()
