@@ -46,7 +46,7 @@ async def language_selection(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await query.answer()
 
     language = query.data
-    context.user_data['language'] = language
+    context.user_data['language'] = language 
 
     if language == 'en':
         await query.edit_message_text(text="You have selected English. What's your name?")
